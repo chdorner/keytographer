@@ -1,4 +1,4 @@
-KEYMAP_FILE ?= keymap.yaml
+KEYMAP_FILE ?= keymap.example.yaml
 
 .PHONY: help
 help: # Show help for each of the Makefile recipes.
