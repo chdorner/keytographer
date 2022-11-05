@@ -3,23 +3,25 @@ package cmd
 import (
 	"context"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/chdorner/keymap-render/internal/keymap"
-	"github.com/chdorner/keymap-render/internal/live"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-func NewLiveCommand() *cobra.Command {
+func NewRenderCommand() *cobra.Command {
 	var ctx context.Context
 	var configFile string
-	var host string
-	var port int
+	var outFile string
 
 	cmd := &cobra.Command{
-		Use:   "live",
-		Short: "Start a live server for easier render configuration.",
+		Use:   "render",
+		Short: "Render keymap configuration to a SVG file.",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -34,26 +36,38 @@ func NewLiveCommand() *cobra.Command {
 				return errors.New("specified keymap configuration file does not exist")
 			}
 
-			host, _ = cmd.Flags().GetString("host")
-			port, _ = cmd.Flags().GetInt("port")
+			outFile, _ = cmd.Flags().GetString("out")
+			if outFile == "" {
+				base := strings.TrimSuffix(configFile, filepath.Ext(configFile))
+				if base == "" {
+					base = "output"
+				}
+				outFile = fmt.Sprintf("%s.svg", base)
+				logrus.Debugf("output file not set, using %s", outFile)
+			}
+
+			if configFile == outFile {
+				return errors.New("input and output file are the same")
+			}
 
 			return nil
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			renderer := keymap.NewRenderer()
-			server, err := live.NewServer(ctx, renderer, configFile, host, port)
+			config, err := keymap.Parse(configFile)
 			if err != nil {
 				return err
 			}
-			logrus.Infof("starting server on %s:%d", host, port)
-			return server.ListenAndServe()
+
+			renderer := keymap.NewRenderer()
+			svg := renderer.Render(config)
+
+			return ioutil.WriteFile(outFile, svg, 0644)
 		},
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("host", "H", "localhost", "Host on which to run the live server on.")
-	fl.IntP("port", "p", 8080, "Port on which to run the live server on.")
+	fl.StringP("out", "o", "", "Path to output file.")
 
 	return cmd
 }
