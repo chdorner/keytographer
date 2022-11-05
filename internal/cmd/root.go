@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -11,11 +10,8 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "keymap-render",
-	Short: "Render keymaps as SVG.",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hello")
-	},
+	Use:   "keytographer",
+	Short: "Render beautiful keymap visualizations.",
 }
 
 func Execute() {

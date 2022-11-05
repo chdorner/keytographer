@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/chdorner/keymap-render/internal/keymap"
+	"github.com/chdorner/keytographer/internal/keytographer"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
@@ -23,7 +23,7 @@ type Server struct {
 	debug    bool
 	host     string
 	port     int
-	renderer keymap.Renderer
+	renderer keytographer.Renderer
 
 	mux     *http.ServeMux
 	tplLive *template.Template
@@ -35,7 +35,7 @@ type Server struct {
 	watchFile string
 }
 
-func NewServer(ctx context.Context, renderer keymap.Renderer, watchFile, host string, port int) (*Server, error) {
+func NewServer(ctx context.Context, renderer keytographer.Renderer, watchFile, host string, port int) (*Server, error) {
 	tplLive, err := template.New("live").Parse(tplLiveSrc)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 }
 
 func (s *Server) render() ([]byte, error) {
-	config, err := keymap.Parse(s.watchFile)
+	config, err := keytographer.Parse(s.watchFile)
 	if err != nil {
 		return nil, err
 	}

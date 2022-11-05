@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/chdorner/keymap-render/internal/keymap"
+	"github.com/chdorner/keytographer/internal/keytographer"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -54,12 +54,12 @@ func NewRenderCommand() *cobra.Command {
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			config, err := keymap.Parse(configFile)
+			config, err := keytographer.Parse(configFile)
 			if err != nil {
 				return err
 			}
 
-			renderer := keymap.NewRenderer()
+			renderer := keytographer.NewRenderer()
 			svg := renderer.Render(config)
 
 			return ioutil.WriteFile(outFile, svg, 0644)

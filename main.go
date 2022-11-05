@@ -1,6 +1,6 @@
 package main
 
-import "github.com/chdorner/keymap-render/internal/cmd"
+import "github.com/chdorner/keytographer/internal/cmd"
 
 func main() {
 	cmd.Execute()

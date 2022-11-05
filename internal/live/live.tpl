@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Go WebSocket Tutorial</title>
+    <title>Keytographer</title>
   </head>
   <body>
     <div id="live"></div>
     <script>
         let socket = new WebSocket("{{ .websocketURL }}")
 
-{{ if .debug }}      
+{{ if .debug }}
         socket.onclose = event => {
           setTimeout(() => {
             location.reload();
@@ -26,4 +26,4 @@
         }
     </script>
   </body>
-</html> 
+</html>

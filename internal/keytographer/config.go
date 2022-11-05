@@ -1,4 +1,4 @@
-package keymap
+package keytographer
 
 type Config struct {
 	Name     string
