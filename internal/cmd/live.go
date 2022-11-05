@@ -5,8 +5,8 @@ import (
 	"errors"
 	"os"
 
+	"github.com/chdorner/keymap-render/internal/keymap"
 	"github.com/chdorner/keymap-render/internal/live"
-	"github.com/chdorner/keymap-render/internal/renderer"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -41,7 +41,7 @@ func NewLiveCommand() *cobra.Command {
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			renderer := renderer.NewRenderer(&renderer.RenderConfig{})
+			renderer := keymap.NewRenderer()
 			server, err := live.NewServer(ctx, renderer, configFile, host, port)
 			if err != nil {
 				return err

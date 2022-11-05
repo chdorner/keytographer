@@ -1,4 +1,4 @@
-package renderer
+package keymap
 
 import (
 	"bytes"
@@ -6,27 +6,22 @@ import (
 	svg "github.com/ajstarks/svgo"
 )
 
-type RenderConfig struct{}
-
 type Renderer interface {
-	Render() []byte
+	Render(*Config) []byte
 }
 
 type renderer struct {
-	counter int
 }
 
-func NewRenderer(config *RenderConfig) Renderer {
-	return &renderer{
-		counter: 0,
-	}
+func NewRenderer() Renderer {
+	return &renderer{}
 }
 
-func (r *renderer) Render() []byte {
+func (r *renderer) Render(c *Config) []byte {
 	buf := bytes.NewBuffer([]byte{})
 
 	s := svg.New(buf)
-	s.Start(500, 500)
+	s.Start(c.Canvas.Width, c.Canvas.Height)
 	s.Circle(250, 250, 125, "fill:none;stroke:black")
 	s.End()
 

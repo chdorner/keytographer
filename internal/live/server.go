@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/chdorner/keymap-render/internal/renderer"
+	"github.com/chdorner/keymap-render/internal/keymap"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
@@ -19,11 +19,11 @@ var (
 )
 
 type Server struct {
-	ctx   context.Context
-	debug bool
-	host  string
-	port  int
-	r     renderer.Renderer
+	ctx      context.Context
+	debug    bool
+	host     string
+	port     int
+	renderer keymap.Renderer
 
 	mux     *http.ServeMux
 	tplLive *template.Template
@@ -35,23 +35,24 @@ type Server struct {
 	watchFile string
 }
 
-func NewServer(ctx context.Context, r renderer.Renderer, watchFile, host string, port int) (*Server, error) {
+func NewServer(ctx context.Context, renderer keymap.Renderer, watchFile, host string, port int) (*Server, error) {
 	tplLive, err := template.New("live").Parse(tplLiveSrc)
 	if err != nil {
 		return nil, err
 	}
 
 	s := &Server{
-		ctx:   ctx,
-		debug: ctx.Value("debug").(bool),
-		host:  host,
-		port:  port,
-		r:     r,
+		ctx:      ctx,
+		debug:    ctx.Value("debug").(bool),
+		host:     host,
+		port:     port,
+		renderer: renderer,
 
 		mux:     http.NewServeMux(),
 		tplLive: tplLive,
 
-		clients:     make(map[*websocket.Conn]bool),
+		clients: make(map[*websocket.Conn]bool),
+		// TODO: also send config parsing / rendering errors back to browser
 		broadcaster: make(chan []byte),
 		upgrader:    websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }},
 
@@ -103,7 +104,8 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 	defer ws.Close()
 	s.clients[ws] = true
 
-	s.broadcaster <- s.r.Render()
+	output, _ := s.render()
+	s.broadcaster <- output
 
 	for {
 		_, _, err := ws.ReadMessage()
@@ -111,6 +113,15 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 			return
 		}
 	}
+}
+
+func (s *Server) render() ([]byte, error) {
+	config, err := keymap.Parse(s.watchFile)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.renderer.Render(config), nil
 }
 
 func (s *Server) watch(watcher *fsnotify.Watcher) {
@@ -121,7 +132,8 @@ func (s *Server) watch(watcher *fsnotify.Watcher) {
 				return
 			}
 			if event.Has(fsnotify.Write) {
-				s.broadcaster <- s.r.Render()
+				output, _ := s.render()
+				s.broadcaster <- output
 			}
 		}
 	}

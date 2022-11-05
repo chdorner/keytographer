@@ -1,2 +1,5 @@
 name: example
 keyboard: crkbd
+canvas:
+  width: 600
+  height: 400
