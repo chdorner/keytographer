@@ -11,4 +11,4 @@ install-tools: # Install development tools
 
 .PHONY: live
 live: # Start live server with automatic code reload
-	air -- -w ${KEYMAP_FILE} -d
+	air -- -d live -c ${KEYMAP_FILE}

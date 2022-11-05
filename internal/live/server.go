@@ -1,6 +1,7 @@
 package live
 
 import (
+	"context"
 	_ "embed"
 	"fmt"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 	"github.com/chdorner/keymap-render/internal/renderer"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/websocket"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -18,6 +19,7 @@ var (
 )
 
 type Server struct {
+	ctx   context.Context
 	debug bool
 	host  string
 	port  int
@@ -33,14 +35,15 @@ type Server struct {
 	watchFile string
 }
 
-func NewServer(r renderer.Renderer, watchFile, host string, port int, debug bool) (*Server, error) {
+func NewServer(ctx context.Context, r renderer.Renderer, watchFile, host string, port int) (*Server, error) {
 	tplLive, err := template.New("live").Parse(tplLiveSrc)
 	if err != nil {
 		return nil, err
 	}
 
 	s := &Server{
-		debug: debug,
+		ctx:   ctx,
+		debug: ctx.Value("debug").(bool),
 		host:  host,
 		port:  port,
 		r:     r,
@@ -84,7 +87,7 @@ func (s *Server) liveHandler(w http.ResponseWriter, req *http.Request) {
 		"websocketURL": fmt.Sprintf("ws://%s:%d/ws", s.host, s.port),
 	}
 	if err := s.tplLive.Execute(w, data); err != nil {
-		log.WithField("err", err).Warn("failed to render live html template")
+		logrus.WithField("err", err).Warn("failed to render live html template")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -93,7 +96,7 @@ func (s *Server) liveHandler(w http.ResponseWriter, req *http.Request) {
 func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Request) {
 	ws, err := s.upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		log.WithField("err", err).Warn("failed to upgrade websocket connection")
+		logrus.WithField("err", err).Warn("failed to upgrade websocket connection")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
