@@ -3,13 +3,13 @@ package live
 import (
 	_ "embed"
 	"fmt"
-	"log"
 	"net/http"
 	"text/template"
 
 	"github.com/chdorner/keymap-render/internal/renderer"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -84,7 +84,7 @@ func (s *Server) liveHandler(w http.ResponseWriter, req *http.Request) {
 		"websocketURL": fmt.Sprintf("ws://%s:%d/ws", s.host, s.port),
 	}
 	if err := s.tplLive.Execute(w, data); err != nil {
-		log.Println(err)
+		log.WithField("err", err).Warn("failed to render live html template")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -93,7 +93,7 @@ func (s *Server) liveHandler(w http.ResponseWriter, req *http.Request) {
 func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Request) {
 	ws, err := s.upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		log.Println(err)
+		log.WithField("err", err).Warn("failed to upgrade websocket connection")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -103,11 +103,10 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 	s.broadcaster <- s.r.Render()
 
 	for {
-		_, p, err := ws.ReadMessage()
+		_, _, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
-		log.Println(string(p))
 	}
 }
 
@@ -116,7 +115,6 @@ func (s *Server) watch(watcher *fsnotify.Watcher) {
 		select {
 		case event, ok := <-watcher.Events:
 			if !ok {
-				fmt.Println("hello")
 				return
 			}
 			if event.Has(fsnotify.Write) {

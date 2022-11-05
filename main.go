@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"log"
 	"os"
 
 	"github.com/chdorner/keymap-render/internal/live"
 	"github.com/chdorner/keymap-render/internal/renderer"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -31,12 +31,13 @@ func main() {
 	}
 
 	if debug {
-		log.Println("debug mode turned on.")
+		log.SetLevel(log.DebugLevel)
+		log.Debug("debug mode turned on.")
 	}
 
 	renderer := renderer.NewRenderer(&renderer.RenderConfig{})
 
-	log.Printf("starting server on %s:%d\n", host, port)
+	log.Infof("starting server on %s:%d\n", host, port)
 	server, err := live.NewServer(renderer, configFile, host, port, debug)
 	if err != nil {
 		log.Fatal(err)
