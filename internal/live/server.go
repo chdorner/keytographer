@@ -71,9 +71,13 @@ func (s *Server) ListenAndServe() error {
 		return err
 	}
 	defer watcher.Close()
-	watcher.Add(s.watchFile)
-	go s.watch(watcher)
 
+	err = watcher.Add(s.watchFile)
+	if err != nil {
+		return err
+	}
+
+	go s.watch(watcher)
 	go s.handlePushes()
 
 	return http.ListenAndServe(fmt.Sprintf("%s:%d", s.host, s.port), s.mux)
@@ -125,6 +129,7 @@ func (s *Server) render() ([]byte, error) {
 }
 
 func (s *Server) watch(watcher *fsnotify.Watcher) {
+	//nolint:gosimple
 	for {
 		select {
 		case event, ok := <-watcher.Events:

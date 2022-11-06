@@ -8,6 +8,11 @@ help: # Show help for each of the Makefile recipes.
 .PHONY: install-tools
 install-tools: # Install development tools
 	go install github.com/cosmtrek/air@latest
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
+
+.PHONY: lint
+lint: # Lint source code
+	golangci-lint run
 
 .PHONY: live
 live: # Start live server with automatic code reload

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -62,7 +61,7 @@ func NewRenderCommand() *cobra.Command {
 			renderer := keytographer.NewRenderer()
 			svg := renderer.Render(config)
 
-			return ioutil.WriteFile(outFile, svg, 0644)
+			return os.WriteFile(outFile, svg, 0644)
 		},
 	}
 

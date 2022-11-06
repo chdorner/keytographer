@@ -1,13 +1,13 @@
 package keytographer
 
 import (
-	"io/ioutil"
+	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
 func Parse(filePath string) (*Config, error) {
-	file, err := ioutil.ReadFile(filePath)
+	file, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}

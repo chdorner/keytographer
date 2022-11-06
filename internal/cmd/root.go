@@ -31,7 +31,7 @@ func init() {
 
 func createContext(flags *pflag.FlagSet) context.Context {
 	debug, _ := flags.GetBool("debug")
-	return context.WithValue(context.Background(), "debug", debug)
+	return context.WithValue(context.Background(), "debug", debug) //nolint:staticcheck
 }
 
 func configureLogging(ctx context.Context) {
