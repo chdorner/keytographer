@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
@@ -44,7 +45,11 @@ func Validate(data []byte) error {
 		return err
 	}
 
-	return schema.Validate(v)
+	err = schema.Validate(v)
+	if err != nil {
+		logrus.WithField("error", err).Debug("configuration is invalid")
+	}
+	return err
 }
 
 func initSchema() error {

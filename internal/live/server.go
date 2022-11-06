@@ -125,6 +125,11 @@ func (s *Server) render() ([]byte, error) {
 		return nil, err
 	}
 
+	err = keytographer.Validate(data)
+	if err != nil {
+		return nil, err
+	}
+
 	config, err := keytographer.Parse(data)
 	if err != nil {
 		return nil, err
