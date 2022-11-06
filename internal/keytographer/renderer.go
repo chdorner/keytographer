@@ -23,8 +23,14 @@ func (r *renderer) Render(c *Config) []byte {
 
 	s := svg.New(buf)
 	s.Start(c.Canvas.Width, c.Canvas.Height)
+	s.Def()
+	r.keycap(s)
+	s.DefEnd()
 	s.Style("text/css", r.styles(c))
-	s.Circle(250, 250, 125, "fill:none;stroke:black")
+
+	s.Use(10, 10, "#keycap")
+	s.Use(90, 10, "#keycap")
+
 	s.End()
 
 	return buf.Bytes()
@@ -41,4 +47,11 @@ svg {
   background-color: %s;
 }`, backgroundColor)
 	return styles
+}
+
+func (r *renderer) keycap(s *svg.SVG) {
+	s.Gid("keycap")
+	s.Roundrect(0, 0, 70, 70, 3, 3, "fill=\"#383838\"")
+	s.Roundrect(7, 6, 56, 56, 3, 3, "fill=\"#FFFFFF\"", "fill-opacity=\"0.1\"")
+	s.Gend()
 }
