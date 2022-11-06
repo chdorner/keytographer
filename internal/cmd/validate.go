@@ -3,24 +3,20 @@ package cmd
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/chdorner/keytographer/internal/keytographer"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-func NewRenderCommand() *cobra.Command {
+func NewValidateCommand() *cobra.Command {
 	var ctx context.Context
 	var configFile string
-	var outFile string
 
 	cmd := &cobra.Command{
-		Use:   "render",
-		Short: "Render keymap configuration to a SVG file.",
+		Use:   "validate",
+		Short: "Validate keymap configuration.",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -35,20 +31,6 @@ func NewRenderCommand() *cobra.Command {
 				return errors.New("specified keymap configuration file does not exist")
 			}
 
-			outFile, _ = cmd.Flags().GetString("out")
-			if outFile == "" {
-				base := strings.TrimSuffix(configFile, filepath.Ext(configFile))
-				if base == "" {
-					base = "output"
-				}
-				outFile = fmt.Sprintf("%s.svg", base)
-				logrus.Debugf("output file not set, using %s", outFile)
-			}
-
-			if configFile == outFile {
-				return errors.New("input and output file are the same")
-			}
-
 			return nil
 		},
 
@@ -60,18 +42,13 @@ func NewRenderCommand() *cobra.Command {
 
 			err = keytographer.Validate(data)
 			if err != nil {
-				logrus.WithField("error", err).Error("Configuration is invalid")
+				logrus.Error(err)
+				os.Exit(1)
+				return nil
 			}
 
-			config, err := keytographer.Parse(data)
-			if err != nil {
-				return err
-			}
-
-			renderer := keytographer.NewRenderer()
-			svg := renderer.Render(config)
-
-			return os.WriteFile(outFile, svg, 0644)
+			logrus.Info("Configuration is valid!")
+			return nil
 		},
 	}
 

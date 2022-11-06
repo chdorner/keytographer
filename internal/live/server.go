@@ -120,7 +120,12 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 }
 
 func (s *Server) render() ([]byte, error) {
-	config, err := keytographer.Parse(s.watchFile)
+	data, err := keytographer.Load(s.watchFile)
+	if err != nil {
+		return nil, err
+	}
+
+	config, err := keytographer.Parse(data)
 	if err != nil {
 		return nil, err
 	}
