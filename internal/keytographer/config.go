@@ -7,6 +7,7 @@ type Config struct {
 }
 
 type CanvasConfig struct {
-	Width  int
-	Height int
+	Width           int
+	Height          int
+	BackgroundColor string `yaml:"background_color"`
 }

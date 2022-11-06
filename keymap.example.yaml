@@ -3,3 +3,4 @@ keyboard: crkbd
 canvas:
   width: 600
   height: 400
+  background_color: "#FFF4F2"

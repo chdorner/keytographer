@@ -24,4 +24,8 @@ properties:
       height:
         description: The height of the canvas
         type: integer
+      background_color:
+        description: "The background color of the canvas in the format of #FFE4E1"
+        type: string
+        pattern: "^#[a-fA-F0-9]{3}[a-fA-F0-9]{3}?$"
     additionalProperties: false
