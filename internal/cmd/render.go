@@ -79,7 +79,7 @@ func NewRenderCommand() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("out", "o", "", "Path to output file.")
+	fl.StringP("out", "o", "", "Path to the output file.")
 
 	return cmd
 }
