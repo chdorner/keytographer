@@ -1,15 +1,14 @@
 package keytographer
 
 import (
-	"bytes"
 	"fmt"
 
-	svg "github.com/ajstarks/svgo"
+	"github.com/beevik/etree"
 	uuid "github.com/satori/go.uuid"
 )
 
 type Renderer interface {
-	Render(*Config) []byte
+	Render(*Config) ([]byte, error)
 }
 
 type renderer struct {
@@ -19,61 +18,88 @@ func NewRenderer() Renderer {
 	return &renderer{}
 }
 
-func (r *renderer) Render(c *Config) []byte {
-	buf := bytes.NewBuffer([]byte{})
+func (r *renderer) Render(c *Config) ([]byte, error) {
+	doc := etree.NewDocument()
+	doc.CreateProcInst("xml", `version="1.0"`)
 
-	s := svg.New(buf)
-	s.Start(c.Canvas.Width, c.Canvas.Height)
-	s.Style("text/css", r.styles(c))
+	svg := r.svg(doc, c)
+	r.styles(svg, c)
 
-	r.keycap(s, keycapOptions{10, 10, "S"})
-	r.keycap(s, keycapOptions{85, 10, "T"})
-	r.keycap(s, keycapOptions{160, 10, "R"})
-	r.keycap(s, keycapOptions{235, 10, "A"})
+	r.keycap(svg, "S", 10, 10)
+	r.keycap(svg, "T", 85, 10)
+	r.keycap(svg, "R", 160, 10)
+	r.keycap(svg, "A", 235, 10)
 
-	r.keycap(s, keycapOptions{10, 85, "O"})
-	r.keycap(s, keycapOptions{85, 85, "I"})
-	r.keycap(s, keycapOptions{160, 85, "Y"})
-	r.keycap(s, keycapOptions{235, 85, "E"})
+	r.keycap(svg, "O", 10, 85)
+	r.keycap(svg, "I", 85, 85)
+	r.keycap(svg, "Y", 160, 85)
+	r.keycap(svg, "E", 235, 85)
 
-	s.End()
-
-	return buf.Bytes()
+	doc.Indent(2)
+	result, err := doc.WriteToBytes()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
-func (r *renderer) styles(c *Config) string {
+func (r *renderer) svg(doc *etree.Document, c *Config) *etree.Element {
+	svg := doc.CreateElement("svg")
+	svg.CreateAttr("xmlns", "http://www.w3.org/2000/svg")
+	svg.CreateAttr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+	svg.CreateAttr("width", fmt.Sprintf(`%d`, c.Canvas.Width))
+	svg.CreateAttr("height", fmt.Sprintf(`%d`, c.Canvas.Height))
+
+	return svg
+}
+
+func (r *renderer) styles(svg *etree.Element, c *Config) *etree.Element {
+	style := svg.CreateElement("style")
+
 	backgroundColor := c.Canvas.BackgroundColor
 	if backgroundColor == "" {
 		backgroundColor = "#FFFFFF"
 	}
 
-	styles := fmt.Sprintf(`
+	style.CreateCData(fmt.Sprintf(`
 svg {
   background-color: %s;
-}`, backgroundColor)
-	return styles
+}`, backgroundColor))
+
+	return style
 }
 
-type keycapOptions struct {
-	x     int
-	y     int
-	label string
-}
+func (r *renderer) keycap(svg *etree.Element, label string, x, y int) *etree.Element {
+	g := svg.CreateElement("g")
+	g.CreateAttr("id", uuid.NewV4().String())
 
-func (r *renderer) keycap(s *svg.SVG, opts keycapOptions) {
-	inx, iny, inw, inh := opts.x+7, opts.y+6, 56, 56
-	fontSize := 16
-	s.Gid(fmt.Sprintf("keycap-%s", uuid.NewV4().String()))
-	s.Roundrect(opts.x, opts.y, 70, 70, 3, 3, "fill=\"#383838\"")
-	s.Roundrect(inx, iny, inw, inh, 2, 2, "fill=\"#FFFFFF\"", "fill-opacity=\"0.1\"")
-	s.Text(
-		inx+(inw/2),
-		iny+(inh/2)+(fontSize/3),
-		opts.label,
-		"font-family=\"Arial\"",
-		fmt.Sprintf("font-size=\"%d\"", fontSize),
-		"fill=\"#e3e3e3\"",
-		"text-anchor=\"middle\"",
-	)
-	s.Gend()
+	outer := g.CreateElement("rect")
+	outer.CreateAttr("x", fmt.Sprintf(`%d`, x))
+	outer.CreateAttr("y", fmt.Sprintf(`%d`, y))
+	outer.CreateAttr("width", "70")
+	outer.CreateAttr("height", "70")
+	outer.CreateAttr("rx", "3")
+	outer.CreateAttr("rx", "3")
+	outer.CreateAttr("fill", "#383838")
+
+	inx, iny, inw, inh := x+7, y+6, 56, 56
+	inner := g.CreateElement("rect")
+	inner.CreateAttr("x", fmt.Sprintf(`%d`, inx))
+	inner.CreateAttr("y", fmt.Sprintf(`%d`, iny))
+	inner.CreateAttr("width", fmt.Sprintf(`%d`, inw))
+	inner.CreateAttr("height", fmt.Sprintf(`%d`, inh))
+	inner.CreateAttr("fill", "#fff")
+	inner.CreateAttr("fill-opacity", "0.1")
+
+	text := g.CreateElement("text")
+	text.CreateAttr("x", fmt.Sprintf(`%d`, inx+(inw/2)))
+	text.CreateAttr("y", fmt.Sprintf(`%d`, iny+(inh/2)))
+	text.CreateAttr("font-family", "Arial")
+	text.CreateAttr("font-size", "16")
+	text.CreateAttr("fill", "#e3e3e3")
+	text.CreateAttr("text-anchor", "middle")
+	text.CreateAttr("dominant-baseline", "middle")
+	text.CreateText(label)
+
+	return g
 }

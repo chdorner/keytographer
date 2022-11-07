@@ -135,7 +135,7 @@ func (s *Server) render() ([]byte, error) {
 		return nil, err
 	}
 
-	return s.renderer.Render(config), nil
+	return s.renderer.Render(config)
 }
 
 func (s *Server) watch(watcher *fsnotify.Watcher) {

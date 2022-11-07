@@ -3,7 +3,7 @@ module github.com/chdorner/keytographer
 go 1.19
 
 require (
-	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b
+	github.com/beevik/etree v1.1.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/santhosh-tekuri/jsonschema/v5 v5.0.2

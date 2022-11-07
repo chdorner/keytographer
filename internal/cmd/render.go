@@ -69,7 +69,10 @@ func NewRenderCommand() *cobra.Command {
 			}
 
 			renderer := keytographer.NewRenderer()
-			svg := renderer.Render(config)
+			svg, err := renderer.Render(config)
+			if err != nil {
+				return err
+			}
 
 			return os.WriteFile(outFile, svg, 0644)
 		},
