@@ -3,6 +3,7 @@ package live
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"text/template"
@@ -29,10 +30,21 @@ type Server struct {
 	tplLive *template.Template
 
 	clients     map[*websocket.Conn]bool
-	broadcaster chan []byte
+	broadcaster chan *RenderMessage
 	upgrader    websocket.Upgrader
 
 	watchFile string
+}
+
+type RenderMessage struct {
+	Name     string         `json:"name"`
+	Keyboard string         `json:"keyboard"`
+	Layers   []MessageLayer `json:"layers"`
+}
+
+type MessageLayer struct {
+	Name string `json:"name"`
+	Svg  string `json:"svg"`
 }
 
 func NewServer(ctx context.Context, renderer keytographer.Renderer, watchFile, host string, port int) (*Server, error) {
@@ -53,7 +65,7 @@ func NewServer(ctx context.Context, renderer keytographer.Renderer, watchFile, h
 
 		clients: make(map[*websocket.Conn]bool),
 		// TODO: also send config parsing / rendering errors back to browser
-		broadcaster: make(chan []byte),
+		broadcaster: make(chan *RenderMessage),
 		upgrader:    websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }},
 
 		watchFile: watchFile,
@@ -119,7 +131,7 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 	}
 }
 
-func (s *Server) render() ([]byte, error) {
+func (s *Server) render() (*RenderMessage, error) {
 	data, err := keytographer.Load(s.watchFile)
 	if err != nil {
 		return nil, err
@@ -135,7 +147,23 @@ func (s *Server) render() ([]byte, error) {
 		return nil, err
 	}
 
-	return s.renderer.Render(config)
+	msg := &RenderMessage{
+		Name:     config.Name,
+		Keyboard: config.Keyboard,
+	}
+
+	layers, err := s.renderer.RenderAllLayers(config)
+	if err != nil {
+		return nil, err
+	}
+	for _, layer := range layers {
+		msg.Layers = append(msg.Layers, MessageLayer{
+			Name: layer.Name,
+			Svg:  string(layer.Svg),
+		})
+	}
+
+	return msg, nil
 }
 
 func (s *Server) watch(watcher *fsnotify.Watcher) {
@@ -157,8 +185,14 @@ func (s *Server) watch(watcher *fsnotify.Watcher) {
 func (s *Server) handlePushes() {
 	for {
 		msg := <-s.broadcaster
+
+		msgBytes, err := json.Marshal(msg)
+		if err != nil {
+			continue
+		}
+
 		for client := range s.clients {
-			err := client.WriteMessage(websocket.TextMessage, msg)
+			err = client.WriteMessage(websocket.TextMessage, msgBytes)
 			if err != nil {
 				client.Close()
 				delete(s.clients, client)

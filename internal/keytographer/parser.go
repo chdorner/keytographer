@@ -27,6 +27,7 @@ func Parse(data []byte) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	logrus.WithField("config", config).Debug("parsed config")
 
 	return &config, nil
 }

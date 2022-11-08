@@ -16,7 +16,7 @@ import (
 func NewRenderCommand() *cobra.Command {
 	var ctx context.Context
 	var configFile string
-	var outFile string
+	var outDir string
 
 	cmd := &cobra.Command{
 		Use:   "render",
@@ -35,51 +35,62 @@ func NewRenderCommand() *cobra.Command {
 				return errors.New("specified keymap configuration file does not exist")
 			}
 
-			outFile, _ = cmd.Flags().GetString("out")
-			if outFile == "" {
-				base := strings.TrimSuffix(configFile, filepath.Ext(configFile))
-				if base == "" {
-					base = "output"
+			outDir, _ = cmd.Flags().GetString("out")
+			if outDir == "" {
+				outDir := strings.TrimSuffix(configFile, filepath.Ext(configFile))
+				if outDir == "" {
+					outDir = "output"
 				}
-				outFile = fmt.Sprintf("%s.svg", base)
-				logrus.Debugf("output file not set, using %s", outFile)
-			}
-
-			if configFile == outFile {
-				return errors.New("input and output file are the same")
+				logrus.Debugf("output directory not set, using %s", outDir)
 			}
 
 			return nil
 		},
 
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
 			data, err := keytographer.Load(configFile)
 			if err != nil {
-				return err
+				logrus.WithField("error", err).Error("failed to load config file")
+				os.Exit(1)
 			}
 
 			err = keytographer.Validate(data)
 			if err != nil {
-				logrus.WithField("error", err).Error("Configuration is invalid")
+				logrus.WithField("error", err).Error("configuration is invalid")
+				os.Exit(1)
 			}
 
 			config, err := keytographer.Parse(data)
 			if err != nil {
-				return err
+				logrus.WithField("error", err).Error("failed to parse config")
+				os.Exit(1)
 			}
 
 			renderer := keytographer.NewRenderer()
-			svg, err := renderer.Render(config)
+			layers, err := renderer.RenderAllLayers(config)
 			if err != nil {
-				return err
+				logrus.WithField("error", err).Error("failed to render layers")
+				os.Exit(1)
 			}
 
-			return os.WriteFile(outFile, svg, 0644)
+			err = os.MkdirAll(outDir, 0644)
+			if err != nil {
+				logrus.WithField("error", err).Error("failed to create output directory")
+				os.Exit(1)
+			}
+
+			for _, layer := range layers {
+				path := filepath.Join(outDir, fmt.Sprintf("%s.svg", layer.Name))
+				err = os.WriteFile(path, layer.Svg, 0644)
+				if err != nil {
+					logrus.WithField("error", err).Errorf("failed to write layer svg to %s", path)
+				}
+			}
 		},
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("out", "o", "", "Path to the output file.")
+	fl.StringP("out", "o", "", "Path to the output directory.")
 
 	return cmd
 }

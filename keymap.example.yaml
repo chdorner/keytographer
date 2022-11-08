@@ -4,6 +4,150 @@ canvas:
   width: 990
   height: 370
   background_color: "#FFF4F2"
+layers:
+  - name: Base
+    keys:
+      - code: KC_Q
+        label: Q
+      - code: KC_W
+        label: W
+      - code: KC_F
+        label: F
+      - code: KC_P
+        label: P
+      - code: KC_G
+        label: G
+
+      - code: KC_J
+      - code: KC_L
+      - code: KC_U
+      - code: KC_Y
+      - code: KC_SCLN
+
+      - code: HOME_A
+      - code: HOME_R
+      - code: HOME_S
+      - code: HOME_T
+      - code: KC_D
+
+      - code: KC_H
+      - code: HOME_N
+      - code: HOME_E
+      - code: HOME_I
+      - code: HOME_O
+
+      - code: KC_Z
+      - code: KC_X
+      - code: KC_C
+      - code: KC_V
+      - code: KC_B
+
+      - code: KC_K
+      - code: KC_M
+      - code: KC_COMM
+      - code: KC_DOT
+      - code: KC_QUOT
+
+      - code: LAY_MCR
+      - code: LAY_SPC
+      - code: LAY_BSPC
+
+      - code: LAY_TAB
+      - code: KC_ENT
+      - code: LAY_MCR
+
+  - name: Movement
+    keys:
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+
+      - code: KC_CYW
+      - code: KC_NAVB
+      - code: KC_NAVF
+      - code: KC_NO
+      - code: KC_NO
+
+      - code: KC_LGUI
+      - code: KC_LALT
+      - code: KC_LCTL
+      - code: KC_LSFT
+      - code: KC_NO
+
+      - code: KC_LEFT
+      - code: KC_DOWN
+      - code: KC_UP
+      - code: KC_RIGHT
+      - code: KC_NO
+
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+
+      - code: KC_HOME
+      - code: KC_PGDN
+      - code: KC_PGUP
+      - code: KC_END
+      - code: KC_NO
+
+      - code: KC_NO
+      - code: KC_TRNS
+      - code: KC_BSPC
+
+      - code: KC_TAB
+      - code: KC_ENT
+      - code: KC_NO
+
+  - name: Symbols
+    keys:
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+
+      - code: KC_PLUS
+      - code: KC_EQL
+      - code: KC_AMPR
+      - code: KC_ASTR
+      - code: KC_PERC
+
+      - code: KC_LGUI
+      - code: KC_LALT
+      - code: KC_LCTL
+      - code: KC_LSFT
+      - code: KC_NO
+
+      - code: KC_TILD
+      - code: KC_QUES
+      - code: KC_HASH
+      - code: KC_GRV
+      - code: KC_SLSH
+
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+      - code: KC_NO
+
+      - code: KC_DLR
+      - code: KC_AT
+      - code: KC_BSLS
+      - code: KC_PIPE
+      - code: KC_CIRC
+
+      - code: KC_NO
+      - code: KC_TRNS
+      - code: KC_BSPC
+
+      - code: KC_TAB
+      - code: KC_ENT
+      - code: KC_NO
+
 layout:
     keys:
         - x: 0
