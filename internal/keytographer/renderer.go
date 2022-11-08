@@ -1,7 +1,6 @@
 package keytographer
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/beevik/etree"
@@ -42,7 +41,7 @@ func (r *renderer) RenderAllLayers(c *Config) ([]*RenderedLayer, error) {
 func (r *renderer) RenderLayer(c *Config, layerName string) (*RenderedLayer, error) {
 	layer := c.GetLayer(layerName)
 	if layer == nil {
-		return nil, errors.New(fmt.Sprintf("layer with name %s does not exist", layerName))
+		return nil, fmt.Errorf("layer with name %s does not exist", layerName)
 	}
 
 	doc := etree.NewDocument()
