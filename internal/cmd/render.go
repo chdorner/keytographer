@@ -37,11 +37,11 @@ func NewRenderCommand() *cobra.Command {
 
 			outDir, _ = cmd.Flags().GetString("out")
 			if outDir == "" {
-				outDir := strings.TrimSuffix(configFile, filepath.Ext(configFile))
+				outDir = strings.TrimSuffix(configFile, filepath.Ext(configFile))
 				if outDir == "" {
 					outDir = "output"
 				}
-				logrus.Debugf("output directory not set, using %s", outDir)
+				logrus.Infof("output directory not set, using %s", outDir)
 			}
 
 			return nil
@@ -73,14 +73,14 @@ func NewRenderCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			err = os.MkdirAll(outDir, 0644)
+			err = os.MkdirAll(outDir, 0755)
 			if err != nil {
-				logrus.WithField("error", err).Error("failed to create output directory")
+				logrus.WithField("error", err).Errorf("failed to create output directory %s", outDir)
 				os.Exit(1)
 			}
 
-			for _, layer := range layers {
-				path := filepath.Join(outDir, fmt.Sprintf("%s.svg", layer.Name))
+			for idx, layer := range layers {
+				path := filepath.Join(outDir, fmt.Sprintf("%d-%s.svg", (idx+1), layer.Name))
 				err = os.WriteFile(path, layer.Svg, 0644)
 				if err != nil {
 					logrus.WithField("error", err).Errorf("failed to write layer svg to %s", path)
