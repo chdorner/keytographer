@@ -52,11 +52,16 @@ func (r *renderer) RenderLayer(c *Config, layerName string) (*RenderedLayer, err
 	r.styles(svg, c)
 
 	for idx, key := range c.Layout.Keys {
-		layerKey := layer.Keys[idx]
+		var label string
+		if layer.Keys != nil {
+			if len(layer.Keys) > idx {
+				label = layer.Keys[idx].Label
+			}
+		}
 
 		width := key.W * 70
 		height := key.H * 70
-		r.keycap(svg, layerKey.Label, int((key.X*75)+10), int((key.Y*75)+10), width, height)
+		r.keycap(svg, label, int((key.X*75)+10), int((key.Y*75)+10), width, height)
 	}
 
 	doc.Indent(2)
