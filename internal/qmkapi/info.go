@@ -21,10 +21,10 @@ type Layout struct {
 }
 
 type Key struct {
-	X float32
-	Y float32
-	W float32
-	H float32
+	X float64
+	Y float64
+	W float64
+	H float64
 }
 
 func Info(keyboard, path string) (*KeyboardInfo, error) {

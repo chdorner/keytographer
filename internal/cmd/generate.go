@@ -68,11 +68,18 @@ func NewGenerateCommand() *cobra.Command {
 
 			layoutConfig := keytographer.LayoutConfig{}
 			for _, qmkKey := range qmkLayout.Keys {
+				w, h := 1.0, 1.0
+				if qmkKey.W > 0 {
+					w = qmkKey.W
+				}
+				if qmkKey.H > 0 {
+					h = qmkKey.H
+				}
 				layoutConfig.Keys = append(layoutConfig.Keys, keytographer.LayoutKeyConfig{
 					X: qmkKey.X,
 					Y: qmkKey.Y,
-					W: qmkKey.W,
-					H: qmkKey.H,
+					W: w,
+					H: h,
 				})
 			}
 			config := keytographer.Config{
