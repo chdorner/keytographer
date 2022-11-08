@@ -141,7 +141,10 @@
             const content = contentDoc.querySelector(".layer-content")
             content.dataset.layerId = layerId;
             content.querySelector(".svg").innerHTML = layer.svg;
-            content.querySelector(".code").innerHTML = xmlEncode(layer.svg);
+            const code = content.querySelector(".code");
+            if (code != null) {
+              code.innerHTML = xmlEncode(layer.svg);
+            }
 
             layouts.append(content);
           }
