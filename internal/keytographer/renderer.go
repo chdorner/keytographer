@@ -25,15 +25,11 @@ func (r *renderer) Render(c *Config) ([]byte, error) {
 	svg := r.svg(doc, c)
 	r.styles(svg, c)
 
-	r.keycap(svg, "S", 10, 10)
-	r.keycap(svg, "T", 85, 10)
-	r.keycap(svg, "R", 160, 10)
-	r.keycap(svg, "A", 235, 10)
-
-	r.keycap(svg, "O", 10, 85)
-	r.keycap(svg, "I", 85, 85)
-	r.keycap(svg, "Y", 160, 85)
-	r.keycap(svg, "E", 235, 85)
+	for _, key := range c.Layout.Keys {
+		width := key.W * 70
+		height := key.H * 70
+		r.keycap(svg, "", int((key.X*75)+10), int((key.Y*75)+10), width, height)
+	}
 
 	doc.Indent(2)
 	result, err := doc.WriteToBytes()
@@ -69,31 +65,31 @@ svg {
 	return style
 }
 
-func (r *renderer) keycap(svg *etree.Element, label string, x, y int) *etree.Element {
+func (r *renderer) keycap(svg *etree.Element, label string, x, y int, w, h float64) *etree.Element {
 	g := svg.CreateElement("g")
 	g.CreateAttr("id", uuid.NewV4().String())
 
 	outer := g.CreateElement("rect")
 	outer.CreateAttr("x", fmt.Sprintf(`%d`, x))
 	outer.CreateAttr("y", fmt.Sprintf(`%d`, y))
-	outer.CreateAttr("width", "70")
-	outer.CreateAttr("height", "70")
+	outer.CreateAttr("width", fmt.Sprintf(`%f`, w))
+	outer.CreateAttr("height", fmt.Sprintf(`%f`, h))
 	outer.CreateAttr("rx", "3")
 	outer.CreateAttr("rx", "3")
 	outer.CreateAttr("fill", "#383838")
 
-	inx, iny, inw, inh := x+7, y+6, 56, 56
+	inx, iny, inw, inh := x+7, y+6, w-14, h-14
 	inner := g.CreateElement("rect")
 	inner.CreateAttr("x", fmt.Sprintf(`%d`, inx))
 	inner.CreateAttr("y", fmt.Sprintf(`%d`, iny))
-	inner.CreateAttr("width", fmt.Sprintf(`%d`, inw))
-	inner.CreateAttr("height", fmt.Sprintf(`%d`, inh))
+	inner.CreateAttr("width", fmt.Sprintf(`%f`, inw))
+	inner.CreateAttr("height", fmt.Sprintf(`%f`, inh))
 	inner.CreateAttr("fill", "#fff")
 	inner.CreateAttr("fill-opacity", "0.1")
 
 	text := g.CreateElement("text")
-	text.CreateAttr("x", fmt.Sprintf(`%d`, inx+(inw/2)))
-	text.CreateAttr("y", fmt.Sprintf(`%d`, iny+(inh/2)))
+	text.CreateAttr("x", fmt.Sprintf(`%d`, inx+(int(inw/2))))
+	text.CreateAttr("y", fmt.Sprintf(`%d`, iny+(int(inh/2))))
 	text.CreateAttr("font-family", "Arial")
 	text.CreateAttr("font-size", "16")
 	text.CreateAttr("fill", "#e3e3e3")

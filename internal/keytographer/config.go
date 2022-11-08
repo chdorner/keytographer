@@ -18,8 +18,8 @@ type LayoutConfig struct {
 }
 
 type LayoutKeyConfig struct {
-	X float32 `yaml:"x"`
-	Y float32 `yaml:"y"`
-	W float32 `yaml:"w"`
-	H float32 `yaml:"h"`
+	X float64 `yaml:"x"`
+	Y float64 `yaml:"y"`
+	W float64 `yaml:"w"`
+	H float64 `yaml:"h"`
 }
