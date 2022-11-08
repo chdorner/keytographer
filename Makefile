@@ -17,3 +17,7 @@ lint: # Lint source code
 .PHONY: live
 live: # Start live server with automatic code reload
 	air -- -d live -c ${KEYMAP_FILE}
+
+.PHONY: validate
+validate: # Validates a keymap
+	go run main.go -d validate -c ${KEYMAP_FILE}
