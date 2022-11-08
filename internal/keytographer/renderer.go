@@ -103,7 +103,8 @@ svg {
 
 func (r *renderer) keycap(svg *etree.Element, label string, x, y int, w, h float64) *etree.Element {
 	g := svg.CreateElement("g")
-	g.CreateAttr("id", uuid.NewV4().String())
+	gid, _ := uuid.NewV4()
+	g.CreateAttr("id", gid.String())
 
 	outer := g.CreateElement("rect")
 	outer.CreateAttr("x", fmt.Sprintf(`%d`, x))
