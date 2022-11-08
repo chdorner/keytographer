@@ -89,6 +89,9 @@ func NewGenerateCommand() *cobra.Command {
 					Width:  800,
 					Height: 600,
 				},
+				Layers: []keytographer.Layer{
+					{Name: "Base"},
+				},
 				Layout: layoutConfig,
 			}
 

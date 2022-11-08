@@ -4,7 +4,7 @@ type Config struct {
 	Name     string
 	Keyboard string `yaml:"keyboard,omitempty"`
 	Canvas   CanvasConfig
-	Layers   []Layer `yaml:"layers"`
+	Layers   []Layer `yaml:"layers,omitempty"`
 	Layout   LayoutConfig
 }
 
@@ -16,7 +16,7 @@ type CanvasConfig struct {
 
 type Layer struct {
 	Name string
-	Keys []LayerKey `yaml:"keys"`
+	Keys []LayerKey `yaml:"keys,omitempty"`
 }
 
 type LayerKey struct {
