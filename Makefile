@@ -14,10 +14,10 @@ install-tools: # Install development tools
 lint: # Lint source code
 	golangci-lint run
 
-.PHONY: live
-live: # Start live server with automatic code reload
+.PHONY: run-live
+run-live: # Start live server with automatic code reload
 	air -- -d live -c ${KEYMAP_FILE}
 
-.PHONY: validate
-validate: # Validates a keymap
+.PHONY: run-validate
+run-validate: # Validates a keymap
 	go run main.go -d validate -c ${KEYMAP_FILE}

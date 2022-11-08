@@ -29,3 +29,28 @@ properties:
         type: string
         pattern: "^#[a-fA-F0-9]{3}[a-fA-F0-9]{3}?$"
     additionalProperties: false
+  layout:
+    type: object
+    required:
+      - keys
+    properties:
+      keys:
+        description: The list of keys in the layout with their coordinates
+        type: array
+        items:
+          description: A key in a layout
+          type: object
+          properties:
+            x:
+              description: The x coordinate of the key, measured in key units
+              type: number
+            y:
+              description: The y coordinate of the key, measured in key units
+              type: number
+            w:
+              description: The width of the key, measured in key units, defaults to 1.0
+              type: number
+            h:
+              description: The height of the key, measured in key units, defaults to 1.0
+              type: number
+    additionalProperties: false
