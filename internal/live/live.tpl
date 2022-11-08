@@ -98,7 +98,6 @@
           const layouts = document.querySelector("#layouts");
 
           const active = tabs.querySelector(".active");
-          console.log("active", active);
           if (active != null) {
             active.classList.remove("active");
             layouts.querySelector(`.layer-content[data-layer-id="${active.dataset.layerId}"]`).classList.add("d-none");
@@ -113,18 +112,27 @@
           const tabs = document.querySelector("#tabs");
           const layouts = document.querySelector("#layouts");
 
+          var initialActiveLayerName = null;
+          const active = tabs.querySelector(".active");
+          if (active != null) {
+            initialActiveLayerName = active.dataset.layerName;
+          }
+
           tabs.innerHTML = '';
           layouts.innerHTML = '';
 
           var initialLayerId = null;
           for (layer of layers) {
             const layerId = crypto.randomUUID();
-            if (initialLayerId == null) {
+            if (initialActiveLayerName == layer.name) {
+              initialLayerId = layerId;
+            } else if (initialLayerId == null) {
               initialLayerId = layerId;
             }
 
             const tab = layertab.content.cloneNode(true);
             tab.querySelector('.tab-item').dataset.layerId = layerId;
+            tab.querySelector('.tab-item').dataset.layerName = layer.name;
             tab.querySelector("a.layer-name").innerHTML = layer.name;
             tab.querySelector("a.layer-name").onclick = function() { selectLayerTab(layerId); };
             tabs.append(tab);
