@@ -1,4 +1,4 @@
-name: example
+name: chdorner36
 keyboard: crkbd
 canvas:
   width: 990
@@ -7,146 +7,251 @@ canvas:
 layers:
   - name: Base
     keys:
-      - code: KC_Q
-        label: Q
-      - code: KC_W
-        label: W
-      - code: KC_F
-        label: F
-      - code: KC_P
-        label: P
-      - code: KC_G
-        label: G
+      - label: q
+      - label: w
+      - label: f
+      - label: p
+      - label: g
 
-      - code: KC_J
-      - code: KC_L
-      - code: KC_U
-      - code: KC_Y
-      - code: KC_SCLN
+      - label: j
+      - label: l
+      - label: u
+      - label: "y"
+      - label: ";"
+        shift: ":"
 
-      - code: HOME_A
-      - code: HOME_R
-      - code: HOME_S
-      - code: HOME_T
-      - code: KC_D
+      - label: a
+        hold: gui
+      - label: r
+        hold: alt
+      - label: s
+        hold: ctrl
+      - label: t
+        hold: shift
+      - label: d
 
-      - code: KC_H
-      - code: HOME_N
-      - code: HOME_E
-      - code: HOME_I
-      - code: HOME_O
+      - label: h
+      - label: "n"
+        hold: shift
+      - label: e
+        hold: ctrl
+      - label: i
+        hold: alt
+      - label: o
+        hold: gui
 
-      - code: KC_Z
-      - code: KC_X
-      - code: KC_C
-      - code: KC_V
-      - code: KC_B
+      - label: z
+      - label: x
+      - label: c
+      - label: v
+      - label: b
 
-      - code: KC_K
-      - code: KC_M
-      - code: KC_COMM
-      - code: KC_DOT
-      - code: KC_QUOT
+      - label: k
+      - label: m
+      - label: ","
+        shift: "<"
+      - label: "."
+        shift: ">"
+      - label: "'"
+        shift: "\""
 
-      - code: LAY_MCR
-      - code: LAY_SPC
-      - code: LAY_BSPC
+      - label: MO_mcr
+      - label: spc
+        hold: LT_mov
+      - label: bspc
+        hold: LT_sym
 
-      - code: LAY_TAB
-      - code: KC_ENT
-      - code: LAY_MCR
+      - label: tab
+        hold: LT_num
+      - label: ent
+      - label: MO_mcr
 
   - name: Movement
     keys:
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
 
-      - code: KC_CYW
-      - code: KC_NAVB
-      - code: KC_NAVF
-      - code: KC_NO
-      - code: KC_NO
+      - label: cycle win
+      - label: nav back
+      - label: nav fwd
+      - label:
+      - label:
 
-      - code: KC_LGUI
-      - code: KC_LALT
-      - code: KC_LCTL
-      - code: KC_LSFT
-      - code: KC_NO
+      - label: gui
+      - label: alt
+      - label: ctrl
+      - label: shift
+      - label:
 
-      - code: KC_LEFT
-      - code: KC_DOWN
-      - code: KC_UP
-      - code: KC_RIGHT
-      - code: KC_NO
+      - label: left
+      - label: down
+      - label: up
+      - label: right
+      - label:
 
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
 
-      - code: KC_HOME
-      - code: KC_PGDN
-      - code: KC_PGUP
-      - code: KC_END
-      - code: KC_NO
+      - label: home
+      - label: pgdn
+      - label: pgup
+      - label: end
+      - label:
 
-      - code: KC_NO
-      - code: KC_TRNS
-      - code: KC_BSPC
+      - label:
+      - active: true
+      - label: bspc
 
-      - code: KC_TAB
-      - code: KC_ENT
-      - code: KC_NO
+      - label: tab
+      - label: ent
+      - label:
 
   - name: Symbols
     keys:
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
 
-      - code: KC_PLUS
-      - code: KC_EQL
-      - code: KC_AMPR
-      - code: KC_ASTR
-      - code: KC_PERC
+      - label: +
+      - label: "="
+      - label: "&"
+      - label: "*"
+      - label: "%"
 
-      - code: KC_LGUI
-      - code: KC_LALT
-      - code: KC_LCTL
-      - code: KC_LSFT
-      - code: KC_NO
+      - label: gui
+      - label: alt
+      - label: ctrl
+      - label: shift
+      - label:
 
-      - code: KC_TILD
-      - code: KC_QUES
-      - code: KC_HASH
-      - code: KC_GRV
-      - code: KC_SLSH
+      - label: "~"
+      - label: "?"
+        shift: "!"
+      - label: "#"
+      - label: "`"
+      - label: "/"
 
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
-      - code: KC_NO
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
 
-      - code: KC_DLR
-      - code: KC_AT
-      - code: KC_BSLS
-      - code: KC_PIPE
-      - code: KC_CIRC
+      - label: $
+        shift: "€"
+      - label: "@"
+      - label: "\\"
+      - label: "|"
+      - label: "^"
 
-      - code: KC_NO
-      - code: KC_TRNS
-      - code: KC_BSPC
+      - label:
+      - label: spc
+      - active: true
 
-      - code: KC_TAB
-      - code: KC_ENT
-      - code: KC_NO
+      - label: tab
+      - label: ent
+      - label:
+
+  - name: Numpad
+    keys:
+      - label:
+      - label: 7
+      - label: 8
+      - label: 9
+      - label: "="
+        shift: "+"
+
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
+
+      - label: 0
+      - label: 4
+      - label: 5
+      - label: 6
+      - label: "-"
+
+      - label:
+      - label: shift
+      - label: ctrl
+      - label: alt
+      - label: gui
+
+      - label: "."
+      - label: 1
+      - label: 2
+      - label: 3
+      - label:
+
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
+
+      - label:
+      - label: spc
+      - label: bspc
+
+      - active: true
+      - label: ent
+      - label:
+
+  - name: Macro
+    keys:
+      - label: lock screen
+      - label:
+      - label:
+      - label:
+      - label: boot loader
+
+      - label:
+      - label:
+      - label:
+      - label:
+      - label:
+
+      - label:
+      - label:
+      - label: screenshot
+      - label:
+      - label:
+
+      - label: prev track
+      - label: vol dn
+      - label: vol up
+      - label: next track
+      - label:
+
+      - label: Zoom mute
+      - label:
+      - label:
+      - label:
+      - label:
+
+      - label:
+      - label: play / pause
+      - label:
+      - label: audio mute
+      - label: Zoom mute
+
+      - active: true
+      - label:
+      - label:
+
+      - label:
+      - label:
+      - active: true
 
 layout:
     keys:
