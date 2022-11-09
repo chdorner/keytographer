@@ -47,6 +47,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run Snyk to check for vulnerabilities
+        if: "github.ref != 'refs/heads/main'"
+        uses: snyk/actions/golang@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Monitor Snyk to check for vulnerabilities
+        if: "github.ref == 'refs/heads/main'"
         uses: snyk/actions/golang@master
         continue-on-error: true
         env:
