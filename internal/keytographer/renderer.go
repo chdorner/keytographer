@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/beevik/etree"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 )
 
 type Renderer interface {
@@ -103,7 +103,7 @@ svg {
 
 func (r *renderer) keycap(svg *etree.Element, label string, x, y int, w, h float64) *etree.Element {
 	g := svg.CreateElement("g")
-	gid, _ := uuid.NewV4()
+	gid, _ := uuid.NewRandom()
 	g.CreateAttr("id", gid.String())
 
 	outer := g.CreateElement("rect")
