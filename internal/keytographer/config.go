@@ -20,6 +20,7 @@ type Layer struct {
 }
 
 type LayerKey struct {
+	Code   string `yaml:"code"`
 	Label  string `yaml:"label"`
 	Shift  string `yaml:"shift"`
 	Hold   string `yaml:"hold"`

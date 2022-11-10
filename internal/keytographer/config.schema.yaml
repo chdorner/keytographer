@@ -29,6 +29,40 @@ properties:
         type: string
         pattern: "^#[a-fA-F0-9]{3}[a-fA-F0-9]{3}?$"
     additionalProperties: false
+  layers:
+    description: The list of layers in the keymap.
+    type: array
+    items:
+      description: A layer in the keymap.
+      type: object
+      properties:
+        keys:
+          description: The list of keys in the layer.
+          type: array
+          items:
+            description: A key in the layer.
+            type: object
+            properties:
+              code:
+                description: The code of the keyused when exporting a QMK keymap.
+                type: string
+              label:
+                description: The label of the key.
+                anyOf:
+                  - type: string
+                  - type: number
+                  - type: "null"
+              shift:
+                description: The shift label of the key.
+                type: string
+              hold:
+                description: The hold of the key.
+                type: string
+              active:
+                description: Whether the key is active.
+                type: boolean
+      required:
+        - keys
   layout:
     type: object
     required:

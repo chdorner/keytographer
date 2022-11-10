@@ -25,10 +25,12 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Enable debug mode.")
 	rootCmd.PersistentFlags().StringP("config", "c", "", "Path to the keymap configuration file to watch for changes.")
 
-	rootCmd.AddCommand(NewValidateCommand())
 	rootCmd.AddCommand(NewRenderCommand())
-	rootCmd.AddCommand(NewLiveCommand())
+	rootCmd.AddCommand(NewValidateCommand())
+	rootCmd.AddCommand(NewExportCommand())
+
 	rootCmd.AddCommand(NewInitCommand())
+	rootCmd.AddCommand(NewLiveCommand())
 }
 
 func createContext(flags *pflag.FlagSet) context.Context {

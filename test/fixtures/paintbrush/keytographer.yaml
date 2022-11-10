@@ -1,0 +1,60 @@
+name: artsey.io
+keyboard: The Paintbrush
+canvas:
+  width: 315
+  height: 165
+  background_color: "#FFF4F2"
+layers:
+  - name: base
+    keys:
+      - label: a
+        code: KC_A
+      - label: r
+        code: KC_R
+      - label: t
+        code: KC_T
+      - label: s
+        code: KC_S
+
+      - label: e
+        code: KC_E
+      - label: "y"
+        code: KC_Y
+      - label: i
+        code: KC_I
+      - label: o
+        code: KC_O
+layout:
+  keys:
+    - x: 0
+      "y": 0
+      w: 1
+      h: 1
+    - x: 1
+      "y": 0
+      w: 1
+      h: 1
+    - x: 2
+      "y": 0
+      w: 1
+      h: 1
+    - x: 3
+      "y": 0
+      w: 1
+      h: 1
+    - x: 0
+      "y": 1
+      w: 1
+      h: 1
+    - x: 1
+      "y": 1
+      w: 1
+      h: 1
+    - x: 2
+      "y": 1
+      w: 1
+      h: 1
+    - x: 3
+      "y": 1
+      w: 1
+      h: 1
