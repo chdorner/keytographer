@@ -254,6 +254,7 @@ layers:
       - active: true
 
 layout:
+    macro: LAYOUT_split_3x5_3
     keys:
         - x: 0
           "y": 0.3

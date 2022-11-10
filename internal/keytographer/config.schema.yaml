@@ -68,6 +68,10 @@ properties:
     required:
       - keys
     properties:
+      macro:
+        description: The macro function for the layout when exporting QMK C keymap.
+        type: string
+        pattern: "^LAYOUT_[0-9a-z_]*$"
       keys:
         description: The list of keys in the layout with their coordinates
         type: array

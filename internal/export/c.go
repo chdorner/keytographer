@@ -38,9 +38,10 @@ func (e *CExporter) Export(config *keytographer.Config, outFile string) error {
 
 	w := bytes.NewBufferString("")
 	err = tpl.Execute(w, map[string]interface{}{
-		"markStart": markStart,
-		"markStop":  markStop,
-		"config":    config,
+		"markStart":   markStart,
+		"markStop":    markStop,
+		"layers":      config.Layers,
+		"layoutMacro": config.Layout.Macro,
 	})
 	if err != nil {
 		return err

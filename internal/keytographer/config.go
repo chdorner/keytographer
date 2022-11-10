@@ -28,7 +28,8 @@ type LayerKey struct {
 }
 
 type LayoutConfig struct {
-	Keys []LayoutKeyConfig `yaml:"keys"`
+	Macro string            `yaml:"macro"`
+	Keys  []LayoutKeyConfig `yaml:"keys"`
 }
 
 type LayoutKeyConfig struct {
