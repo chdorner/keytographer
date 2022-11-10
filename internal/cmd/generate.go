@@ -13,7 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func NewGenerateCommand() *cobra.Command {
+func NewInitCommand() *cobra.Command {
 	var ctx context.Context
 	var keyboardFlag string
 	var pathFlag string
@@ -21,8 +21,8 @@ func NewGenerateCommand() *cobra.Command {
 	var outFile string
 
 	cmd := &cobra.Command{
-		Use:   "generate",
-		Short: "Generate starting configuration.",
+		Use:   "init",
+		Short: "Initialize a starting configuration.",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())

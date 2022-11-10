@@ -28,7 +28,7 @@ func init() {
 	rootCmd.AddCommand(NewValidateCommand())
 	rootCmd.AddCommand(NewRenderCommand())
 	rootCmd.AddCommand(NewLiveCommand())
-	rootCmd.AddCommand(NewGenerateCommand())
+	rootCmd.AddCommand(NewInitCommand())
 }
 
 func createContext(flags *pflag.FlagSet) context.Context {
