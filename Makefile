@@ -19,6 +19,7 @@ install: build # Install keytographer to /usr/local/bin
 
 .PHONY: install-tools
 install-tools: # Install development tools
+	brew install goreleaser/tap/goreleaser anchore/syft/syft
 	go install github.com/cosmtrek/air@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.50.1
 
