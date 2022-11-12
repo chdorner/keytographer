@@ -1,10 +1,9 @@
-package keytographer
+package config
 
 import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"os"
 
 	"github.com/santhosh-tekuri/jsonschema/v5"
 	"github.com/sirupsen/logrus"
@@ -17,36 +16,24 @@ var (
 	schema     *jsonschema.Schema
 )
 
-func Load(filePath string) ([]byte, error) {
-	return os.ReadFile(filePath)
-}
-
-func Parse(data []byte) (*Config, error) {
-	var config Config
-	err := yaml.Unmarshal(data, &config)
-	if err != nil {
-		return nil, err
-	}
-	logrus.WithField("config", config).Debug("parsed config")
-
-	return &config, nil
-}
-
-func Validate(data []byte) error {
+func Schema() *jsonschema.Schema {
 	if schema == nil {
 		err := initSchema()
 		if err != nil {
-			return err
+			panic(err)
 		}
 	}
+	return schema
+}
 
+func Validate(data []byte) error {
 	var v interface{}
 	err := yaml.Unmarshal(data, &v)
 	if err != nil {
 		return err
 	}
 
-	err = schema.Validate(v)
+	err = Schema().Validate(v)
 	if err != nil {
 		logrus.WithField("error", err).Debug("configuration is invalid")
 	}

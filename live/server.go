@@ -8,7 +8,8 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/chdorner/keytographer/internal/keytographer"
+	"github.com/chdorner/keytographer/config"
+	"github.com/chdorner/keytographer/renderer"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
@@ -24,7 +25,7 @@ type Server struct {
 	debug    bool
 	host     string
 	port     int
-	renderer keytographer.Renderer
+	renderer renderer.Renderer
 
 	mux     *http.ServeMux
 	tplLive *template.Template
@@ -47,7 +48,7 @@ type MessageLayer struct {
 	Svg  string `json:"svg"`
 }
 
-func NewServer(ctx context.Context, renderer keytographer.Renderer, watchFile, host string, port int) (*Server, error) {
+func NewServer(ctx context.Context, renderer renderer.Renderer, watchFile, host string, port int) (*Server, error) {
 	tplLive, err := template.New("live").Parse(tplLiveSrc)
 	if err != nil {
 		return nil, err
@@ -132,17 +133,17 @@ func (s *Server) handleWebsocketConnections(w http.ResponseWriter, req *http.Req
 }
 
 func (s *Server) render() (*RenderMessage, error) {
-	data, err := keytographer.Load(s.watchFile)
+	data, err := config.Load(s.watchFile)
 	if err != nil {
 		return nil, err
 	}
 
-	err = keytographer.Validate(data)
+	err = config.Validate(data)
 	if err != nil {
 		return nil, err
 	}
 
-	config, err := keytographer.Parse(data)
+	config, err := config.Parse(data)
 	if err != nil {
 		return nil, err
 	}

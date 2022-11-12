@@ -5,18 +5,21 @@ import (
 	"errors"
 	"os"
 
-	"github.com/chdorner/keytographer/internal/keytographer"
+	"github.com/chdorner/keytographer/live"
+	"github.com/chdorner/keytographer/renderer"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-func NewValidateCommand() *cobra.Command {
+func NewLiveCommand() *cobra.Command {
 	var ctx context.Context
 	var configFile string
+	var host string
+	var port int
 
 	cmd := &cobra.Command{
-		Use:   "validate",
-		Short: "Validate keymap configuration.",
+		Use:   "live",
+		Short: "Start a live server for easier render configuration.",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -31,29 +34,26 @@ func NewValidateCommand() *cobra.Command {
 				return errors.New("specified keymap configuration file does not exist")
 			}
 
+			host, _ = cmd.Flags().GetString("host")
+			port, _ = cmd.Flags().GetInt("port")
+
 			return nil
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			data, err := keytographer.Load(configFile)
+			renderer := renderer.NewRenderer()
+			server, err := live.NewServer(ctx, renderer, configFile, host, port)
 			if err != nil {
 				return err
 			}
-
-			err = keytographer.Validate(data)
-			if err != nil {
-				logrus.Error(err)
-				os.Exit(1)
-				return nil
-			}
-
-			logrus.Info("Configuration is valid!")
-			return nil
+			logrus.Infof("starting server on %s:%d", host, port)
+			return server.ListenAndServe()
 		},
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("out", "o", "", "Path to output file.")
+	fl.StringP("host", "H", "localhost", "Host on which to run the live server on.")
+	fl.IntP("port", "p", 8080, "Port on which to run the live server on.")
 
 	return cmd
 }

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/chdorner/keytographer/internal/cmd"
+import "github.com/chdorner/keytographer/cmd"
 
 func main() {
 	cmd.Execute()

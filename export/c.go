@@ -9,7 +9,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/chdorner/keytographer/internal/keytographer"
+	"github.com/chdorner/keytographer/config"
 	"github.com/sirupsen/logrus"
 )
 
@@ -28,7 +28,7 @@ func NewCExporter(ctx context.Context) *CExporter {
 	return &CExporter{ctx}
 }
 
-func (e *CExporter) Export(config *keytographer.Config, outFile string) error {
+func (e *CExporter) Export(config *config.Config, outFile string) error {
 	logrus.Debug("export config to c keymap")
 
 	tpl, err := template.New("live").Parse(cTpl)

@@ -1,15 +1,16 @@
-package keytographer
+package renderer
 
 import (
 	"fmt"
 
 	"github.com/beevik/etree"
+	"github.com/chdorner/keytographer/config"
 	"github.com/google/uuid"
 )
 
 type Renderer interface {
-	RenderAllLayers(*Config) ([]*RenderedLayer, error)
-	RenderLayer(*Config, string) (*RenderedLayer, error)
+	RenderAllLayers(*config.Config) ([]*RenderedLayer, error)
+	RenderLayer(*config.Config, string) (*RenderedLayer, error)
 }
 
 type RenderedLayer struct {
@@ -24,7 +25,7 @@ func NewRenderer() Renderer {
 	return &renderer{}
 }
 
-func (r *renderer) RenderAllLayers(c *Config) ([]*RenderedLayer, error) {
+func (r *renderer) RenderAllLayers(c *config.Config) ([]*RenderedLayer, error) {
 	var layers []*RenderedLayer
 
 	for _, layerConfig := range c.Layers {
@@ -38,7 +39,7 @@ func (r *renderer) RenderAllLayers(c *Config) ([]*RenderedLayer, error) {
 	return layers, nil
 }
 
-func (r *renderer) RenderLayer(c *Config, layerName string) (*RenderedLayer, error) {
+func (r *renderer) RenderLayer(c *config.Config, layerName string) (*RenderedLayer, error) {
 	layer := c.GetLayer(layerName)
 	if layer == nil {
 		return nil, fmt.Errorf("layer with name %s does not exist", layerName)
@@ -75,7 +76,7 @@ func (r *renderer) RenderLayer(c *Config, layerName string) (*RenderedLayer, err
 	}, nil
 }
 
-func (r *renderer) svg(doc *etree.Document, c *Config) *etree.Element {
+func (r *renderer) svg(doc *etree.Document, c *config.Config) *etree.Element {
 	svg := doc.CreateElement("svg")
 	svg.CreateAttr("xmlns", "http://www.w3.org/2000/svg")
 	svg.CreateAttr("xmlns:xlink", "http://www.w3.org/1999/xlink")
@@ -85,7 +86,7 @@ func (r *renderer) svg(doc *etree.Document, c *Config) *etree.Element {
 	return svg
 }
 
-func (r *renderer) styles(svg *etree.Element, c *Config) *etree.Element {
+func (r *renderer) styles(svg *etree.Element, c *config.Config) *etree.Element {
 	style := svg.CreateElement("style")
 
 	backgroundColor := c.Canvas.BackgroundColor

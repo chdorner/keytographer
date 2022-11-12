@@ -3,9 +3,11 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/chdorner/keytographer/internal/keytographer"
 	"github.com/spf13/cobra"
 )
+
+var Version = "0.0.0"
+var BuildTimestamp = ""
 
 func NewVersionCommand() *cobra.Command {
 	return &cobra.Command{
@@ -13,7 +15,11 @@ func NewVersionCommand() *cobra.Command {
 		Short: "Print version of keytographer.",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("keytographer version %s\n", keytographer.Version)
+			fmt.Printf("keytographer version %s\n", BuildVersion())
 		},
 	}
+}
+
+func BuildVersion() string {
+	return fmt.Sprintf("%s (%s)", Version, BuildTimestamp)
 }

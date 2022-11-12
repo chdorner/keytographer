@@ -5,8 +5,8 @@ import (
 	"errors"
 	"os"
 
-	"github.com/chdorner/keytographer/internal/export"
-	"github.com/chdorner/keytographer/internal/keytographer"
+	"github.com/chdorner/keytographer/config"
+	"github.com/chdorner/keytographer/export"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -42,19 +42,19 @@ func NewExportCommand() *cobra.Command {
 		},
 
 		Run: func(cmd *cobra.Command, args []string) {
-			data, err := keytographer.Load(configFile)
+			data, err := config.Load(configFile)
 			if err != nil {
 				logrus.WithField("error", err).Error("failed to load config file")
 				os.Exit(1)
 			}
 
-			err = keytographer.Validate(data)
+			err = config.Validate(data)
 			if err != nil {
 				logrus.WithField("error", err).Error("configuration is invalid")
 				os.Exit(1)
 			}
 
-			config, err := keytographer.Parse(data)
+			config, err := config.Parse(data)
 			if err != nil {
 				logrus.WithField("error", err).Error("failed to parse config")
 				os.Exit(1)

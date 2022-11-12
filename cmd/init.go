@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/chdorner/keytographer/internal/keytographer"
-	"github.com/chdorner/keytographer/internal/qmkapi"
+	"github.com/chdorner/keytographer/config"
+	"github.com/chdorner/keytographer/qmkapi"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
@@ -66,7 +66,7 @@ func NewInitCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			layoutConfig := keytographer.LayoutConfig{}
+			layoutConfig := config.LayoutConfig{}
 			for _, qmkKey := range qmkLayout.Keys {
 				w, h := 1.0, 1.0
 				if qmkKey.W > 0 {
@@ -75,21 +75,21 @@ func NewInitCommand() *cobra.Command {
 				if qmkKey.H > 0 {
 					h = qmkKey.H
 				}
-				layoutConfig.Keys = append(layoutConfig.Keys, keytographer.LayoutKeyConfig{
+				layoutConfig.Keys = append(layoutConfig.Keys, config.LayoutKeyConfig{
 					X: qmkKey.X,
 					Y: qmkKey.Y,
 					W: w,
 					H: h,
 				})
 			}
-			config := keytographer.Config{
+			config := config.Config{
 				Name:     "My awesome layout",
 				Keyboard: keyboard.KeyboardName,
-				Canvas: keytographer.CanvasConfig{
+				Canvas: config.CanvasConfig{
 					Width:  800,
 					Height: 600,
 				},
-				Layers: []keytographer.Layer{
+				Layers: []config.Layer{
 					{Name: "Base"},
 				},
 				Layout: layoutConfig,

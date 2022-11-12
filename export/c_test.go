@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/chdorner/keytographer/internal/keytographer"
+	"github.com/chdorner/keytographer/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -26,7 +26,7 @@ func TestCExportExistingFile(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.fixture, func(t *testing.T) {
-			fixtureDir := filepath.Join(cwd, "..", "..", "test", "fixtures", c.fixture)
+			fixtureDir := filepath.Join(cwd, "..", "test", "fixtures", c.fixture)
 
 			outDir, err := os.MkdirTemp("", "")
 			assert.NoError(t, err)
@@ -66,7 +66,7 @@ func TestCExportNewFile(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.fixture, func(t *testing.T) {
-			fixtureDir := filepath.Join(cwd, "..", "..", "test", "fixtures", c.fixture)
+			fixtureDir := filepath.Join(cwd, "..", "test", "fixtures", c.fixture)
 
 			outDir, err := os.MkdirTemp("", "")
 			assert.NoError(t, err)
@@ -84,13 +84,13 @@ func TestCExportNewFile(t *testing.T) {
 	}
 }
 
-func loadAndParse(t *testing.T, configFile string) *keytographer.Config {
-	data, err := keytographer.Load(configFile)
+func loadAndParse(t *testing.T, configFile string) *config.Config {
+	data, err := config.Load(configFile)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	config, err := keytographer.Parse(data)
+	config, err := config.Parse(data)
 	if err != nil {
 		t.Fatal(err)
 	}
