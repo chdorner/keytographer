@@ -31,6 +31,8 @@ func init() {
 
 	rootCmd.AddCommand(NewInitCommand())
 	rootCmd.AddCommand(NewLiveCommand())
+
+	rootCmd.AddCommand(NewVersionCommand())
 }
 
 func createContext(flags *pflag.FlagSet) context.Context {

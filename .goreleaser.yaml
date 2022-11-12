@@ -9,6 +9,7 @@ builds:
       - linux
       - windows
       - darwin
+    ldflags: -X github.com/chdorner/keytographer/internal/keytographer/version.Version={{.Version}}
 archives:
   - replacements:
       darwin: Darwin
