@@ -6,8 +6,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Version = "0.0.0"
-var BuildTimestamp = ""
+var Version string = "0.0.0-dev"
+var CommitSHA string = "dirty"
+var BuildTimestamp string = "now"
 
 func NewVersionCommand() *cobra.Command {
 	return &cobra.Command{
@@ -21,5 +22,5 @@ func NewVersionCommand() *cobra.Command {
 }
 
 func BuildVersion() string {
-	return fmt.Sprintf("%s (%s)", Version, BuildTimestamp)
+	return fmt.Sprintf("%s (%s, %s)", Version, CommitSHA, BuildTimestamp)
 }

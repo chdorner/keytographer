@@ -11,6 +11,7 @@ builds:
       - darwin
     ldflags: |
       -X "github.com/chdorner/keytographer/cmd.Version={{.Version}}"
+      -X "github.com/chdorner/keytographer/cmd.CommitSHA={{.ShortCommit}}"
       -X "github.com/chdorner/keytographer/cmd.BuildTimestamp={{.Date}}"
 archives:
   - replacements:
