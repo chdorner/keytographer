@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/chdorner/keytographer/config"
@@ -15,7 +16,7 @@ func NewValidateCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "validate",
-		Short: "Validate keymap configuration.",
+		Short: "Validate keymap configuration",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -43,14 +44,12 @@ func NewValidateCommand() *cobra.Command {
 				return nil
 			}
 
-			logrus.Info("Configuration is valid!")
+			fmt.Println("Configuration is valid!")
 			return nil
 		},
 	}
 
-	fl := cmd.Flags()
 	addConfigFlag(cmd)
-	fl.StringP("out", "o", "", "Path to output file.")
 
 	return cmd
 }

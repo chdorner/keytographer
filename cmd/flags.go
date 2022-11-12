@@ -8,7 +8,7 @@ import (
 )
 
 func addConfigFlag(cmd *cobra.Command) {
-	cmd.Flags().StringP("config", "c", "", "Path to the keymap configuration file")
+	cmd.Flags().StringP("config", "c", "", "path to the keymap configuration file")
 }
 
 func parseConfigFlag(cmd *cobra.Command) (string, error) {

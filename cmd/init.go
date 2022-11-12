@@ -22,7 +22,7 @@ func NewInitCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "init",
-		Short: "Initialize a starting configuration.",
+		Short: "Initialize a starting configuration",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -110,10 +110,10 @@ func NewInitCommand() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("keyboard", "k", "", "Name of the keyboard to fetch.")
-	fl.StringP("path", "p", "", "Path to the directory containing info.json")
-	fl.StringP("layout", "l", "", "Name of the layout to choose.")
-	fl.StringP("out", "o", "", "Path to the output file.")
+	fl.StringP("keyboard", "k", "", "name of the keyboard to fetch")
+	fl.StringP("path", "p", "", "path to the remote directory containing info.json")
+	fl.StringP("layout", "l", "", "name of the layout macro function")
+	fl.StringP("out", "o", "", "path to the keytographer config output file")
 
 	return cmd
 }

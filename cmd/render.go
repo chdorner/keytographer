@@ -20,7 +20,7 @@ func NewRenderCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "render",
-		Short: "Render keymap configuration to a SVG file.",
+		Short: "Render keymap configuration to SVG files",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -88,7 +88,7 @@ func NewRenderCommand() *cobra.Command {
 
 	fl := cmd.Flags()
 	addConfigFlag(cmd)
-	fl.StringP("out", "o", "", "Path to the output directory.")
+	fl.StringP("out", "o", "", "path to the output directory")
 
 	return cmd
 }

@@ -18,7 +18,7 @@ func NewExportCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "export",
-		Short: "Export a configuration to QMK keymaps.",
+		Short: "Export a configuration to QMK C keymaps",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -68,7 +68,7 @@ func NewExportCommand() *cobra.Command {
 
 	fl := cmd.Flags()
 	addConfigFlag(cmd)
-	fl.StringP("out", "o", "", "Path to the output file.")
+	fl.StringP("out", "o", "", "path to the output file")
 
 	return cmd
 }

@@ -11,7 +11,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "keytographer",
-	Short: "Render beautiful keymap visualizations.",
+	Short: "Render beautiful keymap visualizations",
 }
 
 func Execute() {
@@ -22,7 +22,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Enable debug mode.")
+	rootCmd.PersistentFlags().BoolP("debug", "d", false, "enable debug mode")
 
 	rootCmd.AddCommand(NewRenderCommand())
 	rootCmd.AddCommand(NewValidateCommand())

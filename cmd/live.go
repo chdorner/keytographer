@@ -17,7 +17,7 @@ func NewLiveCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "live",
-		Short: "Start a live server for easier render configuration.",
+		Short: "Start a live server for easier configuration workflow",
 
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			ctx = createContext(cmd.Flags())
@@ -48,8 +48,8 @@ func NewLiveCommand() *cobra.Command {
 
 	fl := cmd.Flags()
 	addConfigFlag(cmd)
-	fl.StringP("host", "H", "localhost", "Host on which to run the live server on.")
-	fl.IntP("port", "p", 8080, "Port on which to run the live server on.")
+	fl.StringP("host", "H", "localhost", "host on which to run the live server on")
+	fl.IntP("port", "p", 8080, "port on which to run the live server on")
 
 	return cmd
 }
