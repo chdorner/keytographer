@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -27,13 +26,10 @@ func NewRenderCommand() *cobra.Command {
 			ctx = createContext(cmd.Flags())
 			configureLogging(ctx)
 
-			configFile, _ = cmd.Flags().GetString("config")
-			if configFile == "" {
-				return errors.New("missing path to keymap configuration file")
-			}
-			_, err := os.Stat(configFile)
+			var err error
+			configFile, err = parseConfigFlag(cmd)
 			if err != nil {
-				return errors.New("specified keymap configuration file does not exist")
+				return err
 			}
 
 			outDir, _ = cmd.Flags().GetString("out")
@@ -91,6 +87,7 @@ func NewRenderCommand() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
+	addConfigFlag(cmd)
 	fl.StringP("out", "o", "", "Path to the output directory.")
 
 	return cmd

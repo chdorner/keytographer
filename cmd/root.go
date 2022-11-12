@@ -23,7 +23,6 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Enable debug mode.")
-	rootCmd.PersistentFlags().StringP("config", "c", "", "Path to the keymap configuration file to watch for changes.")
 
 	rootCmd.AddCommand(NewRenderCommand())
 	rootCmd.AddCommand(NewValidateCommand())

@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"context"
-	"errors"
-	"os"
 
 	"github.com/chdorner/keytographer/live"
 	"github.com/chdorner/keytographer/renderer"
@@ -25,13 +23,10 @@ func NewLiveCommand() *cobra.Command {
 			ctx = createContext(cmd.Flags())
 			configureLogging(ctx)
 
-			configFile, _ = cmd.Flags().GetString("config")
-			if configFile == "" {
-				return errors.New("missing path to keymap configuration file")
-			}
-			_, err := os.Stat(configFile)
+			var err error
+			configFile, err = parseConfigFlag(cmd)
 			if err != nil {
-				return errors.New("specified keymap configuration file does not exist")
+				return err
 			}
 
 			host, _ = cmd.Flags().GetString("host")
@@ -52,6 +47,7 @@ func NewLiveCommand() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
+	addConfigFlag(cmd)
 	fl.StringP("host", "H", "localhost", "Host on which to run the live server on.")
 	fl.IntP("port", "p", 8080, "Port on which to run the live server on.")
 
