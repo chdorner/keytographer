@@ -81,16 +81,6 @@
           const msg = JSON.parse(event.data);
           renderInfo(msg.name, msg.keyboard);
           renderLayers(msg.layers);
-
-          // const render = document.createRange().createContextualFragment(event.data);
-          // document.querySelector('#live').innerHTML = '';
-          // document.querySelector('#live').appendChild(render);
-
-{{ if .debug }}
-          // const src = document.querySelector('#src')
-          // src.value = event.data;
-          // src.style.height = `${src.scrollHeight}px`
-{{ end }}
         }
 
         function selectLayerTab(layerId) {
