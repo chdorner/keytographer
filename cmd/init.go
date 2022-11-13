@@ -56,7 +56,8 @@ func NewInitCommand() *cobra.Command {
 				"layout":   layoutFlag,
 			}).Debug("init")
 
-			info, err := qmkapi.Info(infoPath)
+			client := qmkapi.NewDefaultClient()
+			info, err := client.Info(infoPath)
 			if err != nil {
 				logrus.WithField("error", err).Error("failed to fetch info.json from QMK API")
 				os.Exit(1)
