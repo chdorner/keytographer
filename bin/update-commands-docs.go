@@ -14,11 +14,11 @@ var (
 	markStartF = "<!-- usage:%s:start -->"
 	markStopF  = "<!-- usage:%s:end -->"
 
-	readmeFile = "README.md"
+	file = "docs/commands.md"
 )
 
 func main() {
-	readmeb, err := os.ReadFile(readmeFile)
+	readmeb, err := os.ReadFile(file)
 	if err != nil {
 		panic(err)
 	}
@@ -28,7 +28,7 @@ func main() {
 		readme = replaceUsage(readme, c)
 	}
 
-	err = os.WriteFile(readmeFile, []byte(readme), 0644)
+	err = os.WriteFile(file, []byte(readme), 0644)
 	if err != nil {
 		panic(err)
 	}
