@@ -3,8 +3,8 @@ package cmd
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
+	"strings"
 
 	"github.com/chdorner/keytographer/config"
 	"github.com/chdorner/keytographer/qmkapi"
@@ -15,10 +15,11 @@ import (
 
 func NewInitCommand() *cobra.Command {
 	var ctx context.Context
-	var keyboardFlag string
-	var pathFlag string
-	var layoutFlag string
+	var infoPath string
 	var outFile string
+
+	var keyboardFlag string
+	var layoutFlag string
 
 	cmd := &cobra.Command{
 		Use:   "init",
@@ -28,46 +29,79 @@ func NewInitCommand() *cobra.Command {
 			ctx = createContext(cmd.Flags())
 			configureLogging(ctx)
 
-			keyboardFlag, _ = cmd.Flags().GetString("keyboard")
-			if keyboardFlag == "" {
-				return errors.New("missing keyboard name to fetch layou")
+			infoPath, _ = cmd.Flags().GetString("info")
+			if infoPath == "" {
+				return errors.New("missing path to info.json to fetch layout")
+			}
+			if !strings.HasPrefix(infoPath, "keyboards/") {
+				infoPath = "keyboards/" + infoPath
 			}
 
-			pathFlag, _ = cmd.Flags().GetString("path")
-			layoutFlag, _ = cmd.Flags().GetString("layout")
 			outFile, _ = cmd.Flags().GetString("out")
+			if outFile == "" {
+				return errors.New("missing path to the keytographer output file")
+			}
+
+			keyboardFlag, _ = cmd.Flags().GetString("keyboard")
+			layoutFlag, _ = cmd.Flags().GetString("layout")
 
 			return nil
 		},
 
 		Run: func(cmd *cobra.Command, args []string) {
 			logrus.WithFields(logrus.Fields{
-				"keyboard": keyboardFlag,
-				"path":     pathFlag,
-				"layout":   layoutFlag,
+				"info":     infoPath,
 				"out":      outFile,
-			})
+				"keyboard": keyboardFlag,
+				"layout":   layoutFlag,
+			}).Debug("init")
 
-			info, err := qmkapi.Info(keyboardFlag, pathFlag)
+			info, err := qmkapi.Info(infoPath)
 			if err != nil {
-				logrus.Error(err)
+				logrus.WithField("error", err).Error("failed to fetch info.json from QMK API")
 				os.Exit(1)
 			}
 
-			keyboard, ok := info.Keyboards[fmt.Sprintf(`%s/%s`, keyboardFlag, pathFlag)]
-			if !ok {
+			var kbName string
+			var keyboard *qmkapi.Keyboard
+			for key, kb := range info.Keyboards {
+				keyboard = &kb
+				kbName = key
+				break
+			}
+			if keyboard == nil {
 				logrus.Error("could not find keyboard with given name and path")
 				os.Exit(1)
 			}
+			logrus.WithField("keyboard", kbName).Debug("found keyboard")
 
-			qmkLayout, ok := keyboard.Layouts[layoutFlag]
-			if !ok {
-				logrus.Error("could not find layout with given name")
-				os.Exit(1)
+			var layoutName string
+			var layout *qmkapi.Layout
+			if layoutFlag == "" {
+				for key, l := range keyboard.Layouts {
+					layout = &l
+					layoutName = key
+					break
+				}
+				if layout == nil {
+					logrus.Error("could not find any layout")
+					os.Exit(1)
+				}
+				logrus.WithField("layout", layoutName).Debug("found first layout")
+			} else {
+				l, ok := keyboard.Layouts[layoutFlag]
+				if !ok {
+					logrus.Error("could not find layout with given name")
+					os.Exit(1)
+				}
+				layoutName = layoutFlag
+				layout = &l
 			}
 
-			layoutConfig := config.LayoutConfig{}
-			for _, qmkKey := range qmkLayout.Keys {
+			layoutConfig := config.LayoutConfig{
+				Macro: layoutName,
+			}
+			for _, qmkKey := range layout.Keys {
 				w, h := 1.0, 1.0
 				if qmkKey.W > 0 {
 					w = qmkKey.W
@@ -110,10 +144,10 @@ func NewInitCommand() *cobra.Command {
 	}
 
 	fl := cmd.Flags()
-	fl.StringP("keyboard", "k", "", "name of the keyboard to fetch")
-	fl.StringP("path", "p", "", "path to the remote directory containing info.json")
-	fl.StringP("layout", "l", "", "name of the layout macro function")
+	fl.StringP("info", "i", "", "path to the info.json in QMK's repository")
 	fl.StringP("out", "o", "", "path to the keytographer config output file")
+	fl.StringP("keyboard", "k", "", "name of the keyboards")
+	fl.StringP("layout", "l", "", "name of the layout macro function")
 
 	return cmd
 }

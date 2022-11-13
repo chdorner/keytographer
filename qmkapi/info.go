@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 type KeyboardInfo struct {
@@ -27,12 +29,18 @@ type Key struct {
 	H float64
 }
 
-func Info(keyboard, path string) (*KeyboardInfo, error) {
-	resp, err := http.Get(fmt.Sprintf(`https://keyboards.qmk.fm/v1/keyboards/%s/%s/info.json`, keyboard, path))
+func Info(path string) (*KeyboardInfo, error) {
+	url := fmt.Sprintf(`https://keyboards.qmk.fm/v1/%s`, path)
+	logrus.WithField("url", url).Debug("Fetching QMK info.json")
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("unexpected QMK API response with code %d", resp.StatusCode)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

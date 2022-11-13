@@ -71,10 +71,10 @@ Usage:
   keytographer init [flags]
 
 Flags:
-  -k, --keyboard string   name of the keyboard to fetch
+  -i, --info string       path to the info.json in QMK's repository
+  -k, --keyboard string   name of the keyboards
   -l, --layout string     name of the layout macro function
   -o, --out string        path to the keytographer config output file
-  -p, --path string       path to the remote directory containing info.json
 
 Global Flags:
   -d, --debug   enable debug mode
