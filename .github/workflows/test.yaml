@@ -1,4 +1,4 @@
-name: Build
+name: test
 
 on:
   push:
@@ -14,21 +14,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
-      - name: Build
-        run: make build
-      - name: Test
-        run: make test
-
-  golangci:
-    name: lint
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,6 +27,30 @@ jobs:
         with:
           version: v1.50.1
           only-new-issues: true
+
+  test:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Setup Code Climate test-reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > /usr/local/bin/cc-test-reporter
+          chmod +x /usr/local/bin/cc-test-reporter
+      - name: Build
+        run: make build
+      - name: Test
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: |
+          cc-test-reporter before-build
+          go test -coverprofile=c.out ./...
+          export EXIT_CODE=$?
+          cc-test-reporter after-build -t gocov -p github.com/chdorner/keytographer --exit-code $?
 
   security:
     runs-on: ubuntu-latest
