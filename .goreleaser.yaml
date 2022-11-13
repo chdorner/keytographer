@@ -38,4 +38,11 @@ brews:
       name: homebrew-keytographer
     homepage: https://github.com/chdorner/keytographer
     description: "Beautiful keymap visualizations"
-    license: "GPL-3.0"
+    license: "MIT"
+scoop:
+  bucket:
+    owner: chdorner
+    name: scoop-keytographer
+  homepage: https://github.com/chdorner/keytographer
+  description: "Beautiful keymap visualizations"
+  license: "MIT"
