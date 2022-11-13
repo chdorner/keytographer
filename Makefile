@@ -10,7 +10,7 @@ build: # Build keytographer
 
 .PHONY: test
 test: # Test keytographer
-	go test ./...
+	go test -cover ./...
 
 .PHONY: install
 install: build # Install keytographer to /usr/local/bin
