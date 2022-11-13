@@ -39,3 +39,10 @@ brews:
     homepage: https://github.com/chdorner/keytographer
     description: "Beautiful keymap visualizations"
     license: "MIT"
+scoop:
+  bucket:
+    owner: chdorner
+    name: scoop-keytographer
+  homepage: https://github.com/chdorner/keytographer
+  description: "Beautiful keymap visualizations"
+  license: "MIT"
