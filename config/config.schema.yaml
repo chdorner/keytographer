@@ -61,8 +61,6 @@ properties:
               active:
                 description: Whether the key is active.
                 type: boolean
-      required:
-        - keys
   layout:
     type: object
     required:

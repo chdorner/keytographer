@@ -12,6 +12,11 @@ build: # Build keytographer
 test: # Test keytographer
 	go test -cover ./...
 
+.PHONY: coverage
+coverage: # Run tests and open coverage report
+	go test -coverprofile=tmp/coverage.out ./...
+	go tool cover -html=tmp/coverage.out
+
 .PHONY: install
 install: build # Install keytographer to /usr/local/bin
 	cp keytographer /usr/local/bin/
