@@ -63,73 +63,20 @@ func NewInitCommand() *cobra.Command {
 				os.Exit(1)
 			}
 
-			var kbName string
-			var keyboard *qmkapi.Keyboard
-			for key, kb := range info.Keyboards {
-				keyboard = &kb
-				kbName = key
-				break
-			}
-			if keyboard == nil {
+			kbName, keyboard, ok := firstKeyboard(info)
+			if !ok {
 				logrus.Error("could not find keyboard with given name and path")
 				os.Exit(1)
 			}
 			logrus.WithField("keyboard", kbName).Debug("found keyboard")
 
-			var layoutName string
-			var layout *qmkapi.Layout
-			if layoutFlag == "" {
-				for key, l := range keyboard.Layouts {
-					layout = &l
-					layoutName = key
-					break
-				}
-				if layout == nil {
-					logrus.Error("could not find any layout")
-					os.Exit(1)
-				}
-				logrus.WithField("layout", layoutName).Debug("found first layout")
-			} else {
-				l, ok := keyboard.Layouts[layoutFlag]
-				if !ok {
-					logrus.Error("could not find layout with given name")
-					os.Exit(1)
-				}
-				layoutName = layoutFlag
-				layout = &l
+			layoutName, layout, err := findLayout(layoutFlag, keyboard)
+			if err != nil {
+				logrus.Error(err)
+				os.Exit(1)
 			}
 
-			layoutConfig := config.LayoutConfig{
-				Macro: layoutName,
-			}
-			for _, qmkKey := range layout.Keys {
-				w, h := 1.0, 1.0
-				if qmkKey.W > 0 {
-					w = qmkKey.W
-				}
-				if qmkKey.H > 0 {
-					h = qmkKey.H
-				}
-				layoutConfig.Keys = append(layoutConfig.Keys, config.LayoutKeyConfig{
-					X: qmkKey.X,
-					Y: qmkKey.Y,
-					W: w,
-					H: h,
-				})
-			}
-			config := config.Config{
-				Name:     "My awesome layout",
-				Keyboard: keyboard.KeyboardName,
-				Canvas: config.CanvasConfig{
-					Width:  800,
-					Height: 600,
-				},
-				Layers: []config.Layer{
-					{Name: "Base"},
-				},
-				Layout: layoutConfig,
-			}
-
+			config := initConfig(kbName, layoutName, layout)
 			configYAML, err := yaml.Marshal(config)
 			if err != nil {
 				logrus.WithField("error", err).Error("failed to render YAML")
@@ -151,4 +98,69 @@ func NewInitCommand() *cobra.Command {
 	fl.StringP("layout", "l", "", "name of the layout macro function")
 
 	return cmd
+}
+
+func firstKeyboard(info *qmkapi.KeyboardInfo) (string, *qmkapi.Keyboard, bool) {
+	for key, kb := range info.Keyboards {
+		return key, &kb, true
+	}
+
+	return "", nil, false
+}
+
+func findLayout(layoutFlag string, keyboard *qmkapi.Keyboard) (string, *qmkapi.Layout, error) {
+	if layoutFlag != "" {
+		l, ok := keyboard.Layouts[layoutFlag]
+		if !ok {
+			return "", nil, errors.New("could not find layout with given name")
+		}
+		return layoutFlag, &l, nil
+	}
+
+	var name string
+	var layout *qmkapi.Layout
+
+	for key, l := range keyboard.Layouts {
+		layout = &l
+		name = key
+		break
+	}
+	if layout == nil {
+		return "", nil, errors.New("could not find any layout")
+	}
+	logrus.WithField("layout", name).Debug("found first layout")
+	return name, layout, nil
+}
+
+func initConfig(keyboardName, layoutName string, layout *qmkapi.Layout) *config.Config {
+	layoutConfig := config.LayoutConfig{
+		Macro: layoutName,
+	}
+	for _, qmkKey := range layout.Keys {
+		w, h := 1.0, 1.0
+		if qmkKey.W > 0 {
+			w = qmkKey.W
+		}
+		if qmkKey.H > 0 {
+			h = qmkKey.H
+		}
+		layoutConfig.Keys = append(layoutConfig.Keys, config.LayoutKeyConfig{
+			X: qmkKey.X,
+			Y: qmkKey.Y,
+			W: w,
+			H: h,
+		})
+	}
+	return &config.Config{
+		Name:     "My awesome layout",
+		Keyboard: keyboardName,
+		Canvas: config.CanvasConfig{
+			Width:  800,
+			Height: 600,
+		},
+		Layers: []config.Layer{
+			{Name: "Base"},
+		},
+		Layout: layoutConfig,
+	}
 }
