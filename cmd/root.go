@@ -21,6 +21,10 @@ func Execute() {
 	}
 }
 
+func RootCommand() *cobra.Command {
+	return rootCmd
+}
+
 func init() {
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "enable debug mode")
 
